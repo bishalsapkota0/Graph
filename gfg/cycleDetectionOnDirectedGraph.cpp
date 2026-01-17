@@ -1,50 +1,32 @@
 class Solution {
+    private:
+    bool dfs(int source, vector<int>&vis, vector<vector<int>>&adjList){
+        if(vis[source]==1) return true; //current path
+        if(vis[source]==2) return false; //its on another path
+        
+        vis[source]=1;//preorder vis
+        for(auto nbr: adjList[source]){
+            if(dfs(nbr,vis,adjList)) return true;
+            
+        }
+        vis[source]=2;//post order visited
+        return false;
+    }
   public:
+  
     bool isCyclic(int V, vector<vector<int>> &edges) {
         // code here
-        vector<int>list;
-        //1. creating adjency List.
-        
-        vector<vector<int>>adjList(V);
-        for(auto edge: edges){
-            int u = edge[0];
-            int v = edge[1];
-            adjList[u].push_back(v);
-        }
-        queue<int>q;
-        vector<int>indegree(V,0);
-        
-        for(int i = 0; i<V; i++){
-            for(int nbr: adjList[i]){
-                indegree[nbr]++;
-            }
-        }
-        //pushing all the node with indegree 0 into queue
-        for(int i = 0; i<V; i++){
-            if(indegree[i]==0) q.push(i);
-          
-        }
-        //Kahn's algo  bfs
-        
-        while(!q.empty()){
-            int top = q.front();
-            q.pop();
-            list.push_back(top);
-            for(auto nbr: adjList[top]){
-                indegree[nbr]--;
-                if(indegree[nbr]==0){
-                    q.push(nbr);
-                }
-            }
-        }
-         if(list.size()==V)
-         {
-             return false;
-         }
-         return true;
-        
-        
-        
+     vector<vector<int>>adjList(V);
+       for(auto edge: edges){
+           int u = edge[0];
+           int v = edge[1];
+           adjList[u].push_back(v);
+       }
+       vector<int>vis(V,0);
+       for(int node = 0; node<V; node++){
+           if(vis[node])continue;
+            if(dfs(node,vis,adjList)==true) return true;
+       }
+       return false;
     }
-    
 };
